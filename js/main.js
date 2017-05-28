@@ -25,7 +25,7 @@ function appendSetOnList(set, operation, set1, set2) {
     let setIndex = String.fromCharCode(65 + sets.length);
     let html;
     if (!operation) html = '<li class="collection-item animated fadeInDown">' + setIndex + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
-    else if (operation == '∩' || operation == '∪' ) {
+    else if (operation == '∩' || operation == '∪' || operation == '-' ) {
         html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + String.fromCharCode(set1 + 65) + ' ' + operation + ' ' + String.fromCharCode(set2 + 65) + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
         sets.push(set);
     }

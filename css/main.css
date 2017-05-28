@@ -301,3 +301,7 @@ input:not([type])+label:after, input[type=text]+label:after, input[type=password
     -o-animation-duration: 0.5s;
     animation-duration: 0.5s;
 }
+
+.about-link {
+    float: right;
+}
