@@ -21,6 +21,29 @@ function printSet(set) {
     return text;
 }
 
+function appendSetOnList(set, operation, set1, set2) {
+    let setIndex = String.fromCharCode(65 + sets.length);
+    let html;
+    if (!operation) html = '<li class="collection-item animated fadeInDown">' + setIndex + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
+    else if (operation == '∩' || operation == '∪' ) {
+        html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + String.fromCharCode(set1 + 65) + ' ' + operation + ' ' + String.fromCharCode(set2 + 65) + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
+        sets.push(set);
+    }
+    else if (operation == '’') {
+        html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + String.fromCharCode(set1 + 65)  + operation + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
+        sets.push(set);
+    }
+    else {
+        html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + operation + '(' + String.fromCharCode(set1 + 65) + ') = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
+        console.log(set);
+        sets.push(set);
+        universe = universe.union(set);
+        $("#universe").html("U = " + printSet(universe) + ' <span style="float: right">| U | = ' + universe.size + '</span></li>');
+    }
+
+    $(".sets").append(html);
+}
+
 function isSetValid() {
     let valid = true;
     let input = $("#set");
@@ -41,7 +64,7 @@ function addSet(textInput) {
     let input = $("#set");
     $("#nosets").hide();
     let set = new Set();
-    let html, texto = "", conjunto;
+    let html, texto = "";
     for (let i = 0; i < textInput.length; i++) {
         if (textInput[ i ].charCodeAt(0) >= 65 && textInput[ i ].charCodeAt(0) <= 90) { // caso seja um conjunto presente
             let temp = textInput[ i ].charCodeAt(0) - 65;
@@ -58,14 +81,11 @@ function addSet(textInput) {
             set.add(textInput[ i ]);
     }
 
-    conjunto = String.fromCharCode(65 + sets.length);
 
-    html = '<li class="collection-item animated fadeInDown">' + conjunto + ' = ' + printSet(set) + '</li>';
-    $(".sets").append(html);
+    appendSetOnList(set);
     sets.push(set);
     universe = universe.union(set);
-    console.log(universe);
-    $("#universe").text("U = " + printSet(universe));
+    $("#universe").html("U = " + printSet(universe) + ' <span style="float: right">| U | = ' + universe.size + '</span></li>');
     input.val("");
     input.focus();
     return true;
@@ -80,7 +100,7 @@ $("#addset").click(function () {
 });
 
 $(document).keypress(function(e) {
-    if(e.which == 13 && isSetValid()) {
+    if(e.which == 13 && isSetValid() && $("#set").is(":focus")) {
         addSet($("#set").val().split(';'));
     }
 });
@@ -92,6 +112,7 @@ $(".unionsets").click(function () {
     let set1 = new Set([...sets[c1]]);
     let set2 = new Set([...sets[c2]]);
 
+    appendSetOnList(set1.union(set2), '∪', c1, c2);
     let result = printSet(set1.union(set2));
 
     let resultField = $("#unionsetresult");
@@ -106,6 +127,7 @@ $(".intersectionsets").click(function () {
     let set1 = new Set([...sets[c1]]);
     let set2 = new Set([...sets[c2]]);
 
+    appendSetOnList(set1.union(set2), '∩', c1, c2);
     let result = printSet(set1.intersection(set2));
 
     let resultField = $("#intersectionresult");
@@ -120,6 +142,7 @@ $(".diffsets").click(function () {
     let set1 = new Set([...sets[c1]]);
     let set2 = new Set([...sets[c2]]);
 
+    appendSetOnList(set1.union(set2), '-', c1, c2);
     let result = printSet(set1.difference(set2));
 
     let resultField = $("#diffresult");
@@ -132,6 +155,7 @@ $(".complementbtn").click(function () {
 
     let set1 = new Set([...sets[c1]]);
 
+    appendSetOnList(universe.difference(set1), '’', c1);
     let result = printSet(universe.difference(set1));
 
     let resultField = $("#complementresult");
@@ -145,12 +169,8 @@ $(".partitionbtn").click(function () {
 
     let subsets = set.subsets();
 
-    let result = "{{";
-    for (let elem of subsets) {
-        result += elem + ", ";
-    }
-    result = result.substring(0, result.length - 2);
-    result += "}";
+    appendSetOnList(subsets, 'P', c1);
+    let result = printSet(subsets);
 
     let resultField = $("#partitionresult");
     resultField.val(result);
@@ -181,7 +201,7 @@ Set.prototype.subsets = function() {
         for (let elem of array) {
             text += elem + ", ";
         }
-        text = text.substring(0, text.length - 2);
+        if (text.length > 2) text = text.substring(0, text.length - 2);
         text += "}";
         setFinal.add(text);
     }
