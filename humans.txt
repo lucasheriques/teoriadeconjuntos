@@ -3,13 +3,13 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
+    Lucas Henrique -- Developer -- https://twitter.com/lucashenfaria
 
 # THANKS
 
-    <name>
+    My teacher, João Ricardo
 
 # TECHNOLOGY COLOPHON
 
     CSS3, HTML5
-    Apache Server Configs, jQuery, Modernizr, Normalize.css
+    jQuery, Modernizr, Normalize.css, Materialize
