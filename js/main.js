@@ -127,7 +127,7 @@ $(".intersectionsets").click(function () {
     let set1 = new Set([...sets[c1]]);
     let set2 = new Set([...sets[c2]]);
 
-    appendSetOnList(set1.union(set2), '∩', c1, c2);
+    appendSetOnList(set1.intersection(set2), '∩', c1, c2);
     let result = printSet(set1.intersection(set2));
 
     let resultField = $("#intersectionresult");
@@ -142,7 +142,7 @@ $(".diffsets").click(function () {
     let set1 = new Set([...sets[c1]]);
     let set2 = new Set([...sets[c2]]);
 
-    appendSetOnList(set1.union(set2), '-', c1, c2);
+    appendSetOnList(set1.difference(set2), '-', c1, c2);
     let result = printSet(set1.difference(set2));
 
     let resultField = $("#diffresult");
