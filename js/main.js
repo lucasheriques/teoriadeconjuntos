@@ -14,7 +14,7 @@ function printSet(set) {
     let text = "{";
     for (let v of set) {
         if (typeof v == typeof set){
-            text += printSet(v) + ", ";
+            text += printSet(v) + "; ";
         }
         else text += v + "; ";
     }
