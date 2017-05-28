@@ -13,7 +13,10 @@ $.fn.extend({
 function printSet(set) {
     let text = "{";
     for (let v of set) {
-        text += v + ", ";
+        if (typeof v == typeof set){
+            text += printSet(v) + ", ";
+        }
+        else text += v + ", ";
     }
     if (text.length > 2) text = text.substring(0, text.length - 2);
     text += "}";
@@ -25,7 +28,7 @@ function appendSetOnList(set, operation, set1, set2) {
     let setIndex = String.fromCharCode(65 + sets.length);
     let html;
     if (!operation) html = '<li class="collection-item animated fadeInDown">' + setIndex + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
-    else if (operation == '∩' || operation == '∪' || operation == '-' ) {
+    else if (operation == '∩' || operation == '∪' || operation == '-' || operation == 'x') {
         html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + String.fromCharCode(set1 + 65) + ' ' + operation + ' ' + String.fromCharCode(set2 + 65) + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
         sets.push(set);
     }
@@ -33,7 +36,11 @@ function appendSetOnList(set, operation, set1, set2) {
         html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + String.fromCharCode(set1 + 65)  + operation + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
         sets.push(set);
     }
-    else {
+    else if (operation.length>=2) {
+        html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + String.fromCharCode(set1 + 65) + ' ' + "r" + ' ' + String.fromCharCode(set2 + 65) + " | " + operation + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
+        sets.push(set);
+    }
+    else{
         html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + operation + '(' + String.fromCharCode(set1 + 65) + ') = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
         console.log(set);
         sets.push(set);
@@ -177,6 +184,37 @@ $(".partitionbtn").click(function () {
     resultField.animateCss("fadeIn");
 });
 
+$(".productbtn").click(function () {
+    let c1 = $("#productset1").val().charCodeAt(0) - 65;
+    let c2 = $("#productset2").val().charCodeAt(0) - 65;
+
+    let set1 = new Set([...sets[c1]]);
+    let set2 = new Set([...sets[c2]]);
+
+    appendSetOnList(set1.productCart(set2), 'x', c1, c2);
+    let result = printSet(set1.productCart(set2));
+
+    let resultField = $("#productresult");
+    resultField.val(result);
+    resultField.animateCss("fadeIn");
+});
+
+$(".relationbtn").click(function () {
+    let c1 = $("#relationset1").val().charCodeAt(0) - 65;
+    let c2 = $("#relationset2").val().charCodeAt(0) - 65;
+    let field = $("#relationfield").val();
+
+    let set1 = new Set([...sets[c1]]);
+    let set2 = new Set([...sets[c2]]);
+
+    appendSetOnList(set1.relation(set2,field), ' ('+field+') ', c1, c2);
+    let result = printSet(set1.relation(field));
+
+    let resultField = $("#relationresult");
+    resultField.val(result);
+    resultField.animateCss("fadeIn");
+});
+
 function generateSubsets(array) {
     var result = [];
     result.push([]);
@@ -234,4 +272,29 @@ Set.prototype.difference = function(setB) {
         difference.delete(elem);
     }
     return difference;
+};
+
+Set.prototype.productCart = function(setB){
+    var productCart = new Set();
+    for (var elem1 of this){
+        for (var elem2 of setB){
+            var item = new Set();
+            item.add(elem1).add(elem2);
+            productCart.add(item);
+        }
+    }
+    return productCart;
+};
+
+Set.prototype.relation = function(c2,field){
+    var relation = new Set();
+    for (var a of this){
+        for (var b of c2){
+            var item = new Set();
+            item.add(a).add(b);
+            if (eval(field))
+                relation.add(item);
+        }
+    }
+    return relation;
 };
