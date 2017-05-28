@@ -16,7 +16,7 @@ function printSet(set) {
         if (typeof v == typeof set){
             text += printSet(v) + ", ";
         }
-        else text += v + ", ";
+        else text += v + "; ";
     }
     if (text.length > 2) text = text.substring(0, text.length - 2);
     text += "}";
