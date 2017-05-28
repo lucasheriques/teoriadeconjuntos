@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title></title>
+    <title>Operações com Conjuntos</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -28,14 +28,14 @@
     <div class="section no-pad-bot" id="main">
         <div class="container">
             <p>No campo abaixo, digite os elementos do conjunto separando-os por ;</p>
+            <p>O conjunto <strong>Universo será preenchido automaticamente</strong>, e o mesmo será formado pela união de todos os conjuntos adicionados.</p>
             <div class="row" style="display: flex; align-items: center;">
-                <div class="input-field col s9">
+                <div class="input-field col s8">
                     <input id="set" type="text" class="" autofocus>
                     <label for="set" data-error="não adicione conjuntos que não existem!">Conjunto</label>
                 </div>
-                <div class="col s3">
-                    <button class="waves-effect waves-light btn" id="addset"><i class="material-icons left">add</i>Adicionar
-                    </button>
+                <div class="col s4">
+                    <button class="waves-effect waves-light btn" id="addset" style="width: 100%">Adicionar conjunto</button>
                 </div>
             </div>
 
@@ -43,12 +43,11 @@
                 <div class="flow-text">Lista de Conjuntos</div>
                 <ul class="collection sets z-depth-1">
                     <li class="collection-item" id="nosets">Não existem conjuntos adicionados!</li>
+                    <li class="collection-item teal white-text" id="universe">U = {}</li>
                 </ul>
             </div>
         </div>
     </div>
-
-
     <div class="container">
         <div class="section">
             <!-- Ops Section   -->
@@ -117,6 +116,21 @@
                             </div>
                             <div class="input-field">
                                 <input id="diffresult" type="text" class="validate" value="Resultado" disabled>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">’</i>Complemento</div>
+                        <div class="collapsible-body">
+                            <div class="input-field">
+                                <input id="complementset" type="text" class="validate">
+                                <label for="complementset">Conjunto 1</label>
+                            </div>
+                            <div>
+                                <button class="waves-effect waves-light btn complementbtn">=</button>
+                            </div>
+                            <div class="input-field" style="flex: 1;">
+                                <input id="complementresult" type="text" class="validate" disabled>
                             </div>
                         </div>
                     </li>

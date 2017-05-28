@@ -10,7 +10,18 @@ $.fn.extend({
     }
 });
 
-function validate() {
+function printSet(set) {
+    let text = "{";
+    for (let v of set) {
+        text += v + ", ";
+    }
+    if (text.length > 2) text = text.substring(0, text.length - 2);
+    text += "}";
+
+    return text;
+}
+
+function isSetValid() {
     let valid = true;
     let input = $("#set");
     let value = input.val();
@@ -32,7 +43,7 @@ function addSet(textInput) {
     let set = new Set();
     let html, texto = "", conjunto;
     for (let i = 0; i < textInput.length; i++) {
-        if (textInput[ i ].charCodeAt(0) >= 65 && textInput[ i ].charCodeAt(0) <= 90) { // verificando se é letra maiuscula
+        if (textInput[ i ].charCodeAt(0) >= 65 && textInput[ i ].charCodeAt(0) <= 90) { // caso seja um conjunto presente
             let temp = textInput[ i ].charCodeAt(0) - 65;
             let conj = "{";
             for (let v of sets[temp]) {
@@ -47,37 +58,30 @@ function addSet(textInput) {
             set.add(textInput[ i ]);
     }
 
-    for (let v of set) {
-        texto += v + ", ";
-    }
-    texto = texto.substring(0, texto.length - 2);
+    conjunto = String.fromCharCode(65 + sets.length);
 
-    for (let i = 65; i <= 65 + sets.length; i++) {
-        conjunto = String.fromCharCode(i);
-    }
-
-    html = '<li class="collection-item animated fadeInDown">' + conjunto + ' = {' + texto + '}</li>';
+    html = '<li class="collection-item animated fadeInDown">' + conjunto + ' = ' + printSet(set) + '</li>';
     $(".sets").append(html);
     sets.push(set);
+    universe = universe.union(set);
+    console.log(universe);
+    $("#universe").text("U = " + printSet(universe));
+    input.val("");
+    input.focus();
     return true;
 }
 
 $("#set").keyup(function () {
-    validate();
+    isSetValid();
 });
 
 $("#addset").click(function () {
     addSet($("#set").val().split(';'));
-    $("#set").val("");
-    $("#set").focus();
 });
 
 $(document).keypress(function(e) {
-    let value = $("#set").val();
-    if(e.which == 13 && validate()) {
+    if(e.which == 13 && isSetValid()) {
         addSet($("#set").val().split(';'));
-        $("#set").val("");
-        $("#set").focus();
     }
 });
 
@@ -88,17 +92,11 @@ $(".unionsets").click(function () {
     let set1 = new Set([...sets[c1]]);
     let set2 = new Set([...sets[c2]]);
 
-    let result = "{";
-    for (let elem of set1.union(set2)) {
-        result += elem + ", ";
-    }
-    result = result.substring(0, result.length - 2);
-    console.log(result);
-    result += "}";
+    let result = printSet(set1.union(set2));
 
-    let resultfield = $("#unionsetresult");
-    resultfield.val(result);
-    resultfield.animateCss("fadeIn");
+    let resultField = $("#unionsetresult");
+    resultField.val(result);
+    resultField.animateCss("fadeIn");
 });
 
 $(".intersectionsets").click(function () {
@@ -108,17 +106,11 @@ $(".intersectionsets").click(function () {
     let set1 = new Set([...sets[c1]]);
     let set2 = new Set([...sets[c2]]);
 
-    let result = "{";
-    for (let elem of set1.intersection(set2)) {
-        result += elem + ", ";
-    }
-    result = result.substring(0, result.length - 2);
-    console.log(result);
-    result += "}";
+    let result = printSet(set1.intersection(set2));
 
-    let resultfield = $("#intersectionresult");
-    resultfield.val(result);
-    resultfield.animateCss("fadeIn");
+    let resultField = $("#intersectionresult");
+    resultField.val(result);
+    resultField.animateCss("fadeIn");
 });
 
 $(".diffsets").click(function () {
@@ -128,17 +120,23 @@ $(".diffsets").click(function () {
     let set1 = new Set([...sets[c1]]);
     let set2 = new Set([...sets[c2]]);
 
-    let result = "{";
-    for (let elem of set1.difference(set2)) {
-        result += elem + ", ";
-    }
-    result = result.substring(0, result.length - 2);
-    console.log(result);
-    result += "}";
+    let result = printSet(set1.difference(set2));
 
-    let resultfield = $("#diffresult");
-    resultfield.val(result);
-    resultfield.animateCss("fadeIn");
+    let resultField = $("#diffresult");
+    resultField.val(result);
+    resultField.animateCss("fadeIn");
+});
+
+$(".complementbtn").click(function () {
+    let c1 = $("#complementset").val().charCodeAt(0) - 65;
+
+    let set1 = new Set([...sets[c1]]);
+
+    let result = printSet(universe.difference(set1));
+
+    let resultField = $("#complementresult");
+    resultField.val(result);
+    resultField.animateCss("fadeIn");
 });
 
 $(".partitionbtn").click(function () {
@@ -154,9 +152,9 @@ $(".partitionbtn").click(function () {
     result = result.substring(0, result.length - 2);
     result += "}";
 
-    let resultfield = $("#partitionresult");
-    resultfield.val(result);
-    resultfield.animateCss("fadeIn");
+    let resultField = $("#partitionresult");
+    resultField.val(result);
+    resultField.animateCss("fadeIn");
 });
 
 function generateSubsets(array) {
