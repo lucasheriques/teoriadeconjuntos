@@ -4,6 +4,7 @@
 # TEAM
 
     Lucas Henrique -- Developer -- https://twitter.com/lucashenfaria
+    Igor Giori -- Developer
 
 # THANKS
 

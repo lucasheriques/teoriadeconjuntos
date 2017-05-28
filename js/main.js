@@ -36,8 +36,9 @@ function appendSetOnList(set, operation, set1, set2) {
         html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + String.fromCharCode(set1 + 65)  + operation + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
         sets.push(set);
     }
-    else if (operation.length>=2) {
+    else if (operation == 'R') {
         html = '<li class="collection-item animated fadeInUp">' + setIndex + ' = ' + String.fromCharCode(set1 + 65) + ' ' + "r" + ' ' + String.fromCharCode(set2 + 65) + " | " + operation + ' = ' + printSet(set) + ' <span style="float: right">| ' + setIndex + ' | = ' + set.size + '</span></li>';
+        console.log(set);
         sets.push(set);
     }
     else{
@@ -207,8 +208,8 @@ $(".relationbtn").click(function () {
     let set1 = new Set([...sets[c1]]);
     let set2 = new Set([...sets[c2]]);
 
-    appendSetOnList(set1.relation(set2,field), ' ('+field+') ', c1, c2);
-    let result = printSet(set1.relation(field));
+    appendSetOnList(set1.relation(set2,field), 'R', c1, c2);
+    let result = printSet(set1.relation(set2, field));
 
     let resultField = $("#relationresult");
     resultField.val(result);
@@ -278,20 +279,18 @@ Set.prototype.productCart = function(setB){
     var productCart = new Set();
     for (var elem1 of this){
         for (var elem2 of setB){
-            var item = new Set();
-            item.add(elem1).add(elem2);
+            let item = "(" + elem1 + ", " + elem2 + ")";
             productCart.add(item);
         }
     }
     return productCart;
 };
 
-Set.prototype.relation = function(c2,field){
+Set.prototype.relation = function(setB,field){
     var relation = new Set();
     for (var a of this){
-        for (var b of c2){
-            var item = new Set();
-            item.add(a).add(b);
+        for (var b of setB) {
+            let item = "(" + a + ", " + b + ")";
             if (eval(field))
                 relation.add(item);
         }
